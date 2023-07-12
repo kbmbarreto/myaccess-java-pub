@@ -8,13 +8,13 @@ pipeline {
     stages {
         stage('Preparation') {
             steps {
-                sh 'rm -rf /home/cskmacedo/.jenkins/jobs/myaccessv2-homolog-api-deploy/builds/*/archive/com/lambdateam/myaccess-java/1.0.0/mycar-1.0.0.jar'
+                sh 'rm -rf /home/cskmacedo/.jenkins/jobs/myaccessv2-homolog-api-deploy/builds/*/archive/com/lambdateam/myaccess-java/1.0.0/myaccess-java-1.0.0.jar'
             }
         }
 
         stage('Clone project') {
             steps {
-                git branch: 'main', url: 'https://github.com/kbmbarreto/myaccess-v2'
+                git branch: 'main', url: 'https://github.com/kbmbarreto/myaccess-java'
             }
         }
 
@@ -45,7 +45,7 @@ pipeline {
         stage('Transfer JAR file') {
             steps {
                 script {
-                    def isRunning = sh(script: "pgrep -f mycar-1.0.0.jar", returnStatus: true)
+                    def isRunning = sh(script: "pgrep -f myaccess-java-1.0.0.jar", returnStatus: true)
                     if (isRunning == 0) {
                         sh "pkill -f myaccess-java-1.0.0.jar"
                     }
