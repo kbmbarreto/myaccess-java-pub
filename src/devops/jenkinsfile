@@ -1,0 +1,63 @@
+pipeline {
+    agent any
+
+    options {
+        timeout(time: 80, unit: 'MINUTES')
+    }
+
+    stages {
+        stage('Preparation') {
+            steps {
+                sh 'rm -rf /home/cskmacedo/.jenkins/jobs/myaccessv2-homolog-api-deploy/builds/*/archive/com/lambdateam/myaccess-java/1.0.0/mycar-1.0.0.jar'
+            }
+        }
+
+        stage('Clone project') {
+            steps {
+                git branch: 'main', url: 'https://github.com/kbmbarreto/myaccess-v2'
+            }
+        }
+
+        stage('Cleaning project') {
+            steps {
+                withMaven(maven: 'Maven3') {
+                    sh "mvn clean"
+                }
+            }
+        }
+
+        stage('Compile project') {
+            steps {
+                withMaven(maven: 'Maven3') {
+                    sh 'mvn clean install'
+                }
+            }
+        }
+
+        stage('Build and generate .jar') {
+            steps {
+                withMaven(maven: 'Maven3') {
+                    sh "mvn package"
+                }
+            }
+        }
+
+        stage('Transfer JAR file') {
+            steps {
+                script {
+                    def isRunning = sh(script: "pgrep -f mycar-1.0.0.jar", returnStatus: true)
+                    if (isRunning == 0) {
+                        sh "pkill -f myaccess-java-1.0.0.jar"
+                    }
+                    sh "cp -f target/*.jar /home/cskmacedo/Documents/sistemas/myaccessv2"
+                }
+            }
+        }
+
+        stage('Run new version') {
+            steps {
+                sh "java -jar /home/cskmacedo/sistemas/myaccessv2/myaccess-java-1.0.0.jar &"
+            }
+        }
+    }
+}
