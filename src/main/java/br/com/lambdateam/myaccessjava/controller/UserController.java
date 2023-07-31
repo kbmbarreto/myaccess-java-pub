@@ -1,12 +1,16 @@
 package br.com.lambdateam.myaccessjava.controller;
 
 import br.com.lambdateam.myaccessjava.dtos.UserDto;
+import br.com.lambdateam.myaccessjava.dtos.UserIdDto;
+import br.com.lambdateam.myaccessjava.exceptions.NotFoundException;
+import br.com.lambdateam.myaccessjava.models.UserModel;
 import br.com.lambdateam.myaccessjava.services.UserService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.AllArgsConstructor;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
@@ -35,6 +39,16 @@ public class UserController {
     @GetMapping(value = "/{id}")
     public UserDto getUserById(@PathVariable("id") Long id) {
         return service.findUserById(id);
+    }
+
+    @GetMapping("/email/{email}")
+    public ResponseEntity<UserIdDto> findUserByEmail(@PathVariable String email) {
+        try {
+            UserIdDto userIdDto = service.findUSerByEmail(email);
+            return ResponseEntity.ok(userIdDto);
+        } catch (NotFoundException e) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
+        }
     }
 
     @PostMapping("/register")

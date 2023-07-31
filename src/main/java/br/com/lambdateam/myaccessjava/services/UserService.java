@@ -1,6 +1,7 @@
 package br.com.lambdateam.myaccessjava.services;
 
 import br.com.lambdateam.myaccessjava.dtos.UserDto;
+import br.com.lambdateam.myaccessjava.dtos.UserIdDto;
 import br.com.lambdateam.myaccessjava.exceptions.BadRequestException;
 import br.com.lambdateam.myaccessjava.exceptions.NotFoundException;
 import br.com.lambdateam.myaccessjava.models.UserModel;
@@ -27,6 +28,9 @@ public class UserService {
     private UserDto convertToDto(UserModel model) {
         return mapper.map(model, UserDto.class);
     }
+    private UserIdDto convertToIdDto(UserModel model) {
+        return mapper.map(model, UserIdDto.class);
+    }
     private UserModel convertToEntity(UserDto dto) {
         return mapper.map(dto, UserModel.class);
     }
@@ -34,6 +38,16 @@ public class UserService {
     public UserModel searchByEmail(String email) {
         return repository.findByEmail(email);
     }
+
+    public UserIdDto findUSerByEmail(String email) {
+        UserModel user = searchByEmail(email);
+
+        if (user == null) {
+            throw new NotFoundException("User with email " + email + " not found");
+        }
+        return convertToIdDto(user);
+    }
+
 
     public List<UserDto> findAllUsers() {
 

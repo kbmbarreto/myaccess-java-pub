@@ -14,7 +14,7 @@ public class CorsConfig {
     CorsFilter corsFilter() {
         CorsConfiguration corsConfiguration = new CorsConfiguration();
         corsConfiguration.setAllowCredentials(true);
-        corsConfiguration.setAllowedOrigins(Arrays.asList("http://localhost:8004/myaccess/v2/login", "http://localhost:8004/login", "http://localhost:4200", "*"));
+        corsConfiguration.setAllowedOrigins(Arrays.asList("http://localhost:8004/myaccess/v2/login", "http://localhost:8004/login", "http://localhost:3000/", "http://localhost:3000/*"));
         corsConfiguration.setAllowedHeaders(
                 Arrays.asList(
                         "Origin",
